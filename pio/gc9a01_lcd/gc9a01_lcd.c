@@ -11,6 +11,7 @@
 #include "hardware/pio.h"
 #include "hardware/gpio.h"
 #include "hardware/interp.h"
+#include "hardware/vreg.h"
 
 #include "gc9a01_lcd.pio.h"
 #include "raspberry_256x256_rgb565.h"
@@ -123,6 +124,8 @@ static inline void gc9a01_start_pixels(PIO pio, uint sm) {
 }
 
 int main() {
+    vreg_set_voltage(VREG_VOLTAGE_1_25);
+    set_sys_clock_khz(400000, true);
     stdio_init_all();
 
     PIO pio = pio0;
@@ -168,7 +171,7 @@ int main() {
     float theta = 0.f;
     float theta_max = 2.f * (float) M_PI;
     while (1) {
-        theta += 0.02f;
+        theta += 0.005f;
         if (theta > theta_max)
             theta -= theta_max;
         int32_t rotate[4] = {
