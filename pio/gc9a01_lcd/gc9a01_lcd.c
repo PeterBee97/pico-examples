@@ -14,7 +14,7 @@
 #include "hardware/vreg.h"
 
 #include "gc9a01_lcd.pio.h"
-#include "raspberry_256x256_rgb565.h"
+#include "doge_256x256_rgb565.h"
 
 #define SCREEN_WIDTH 240
 #define SCREEN_HEIGHT 240
@@ -79,7 +79,7 @@ static const uint8_t gc9a01_init_seq[] = {
         8, 0, 0x74, 0x10, 0x85, 0x80, 0x00, 0x00, 0x4e, 0x00,
         3, 0, 0x98, 0x3e, 0x07,
         1, 120, 0x35,
-        2, 0, 0x36, 0x48,
+        2, 0, 0x36, 0xe8,
         5, 0, 0x2a, 0x00, 0x00, 0x00, 0xef,
         5, 0, 0x2b, 0x00, 0x00, 0x00, 0xef,
         1, 2, 0x21,                         // Inversion on, then 10 ms delay (supposedly a hack?)
@@ -124,8 +124,8 @@ static inline void gc9a01_start_pixels(PIO pio, uint sm) {
 }
 
 int main() {
-    vreg_set_voltage(VREG_VOLTAGE_1_25);
-    set_sys_clock_khz(400000, true);
+    vreg_set_voltage(VREG_VOLTAGE_1_05);
+    set_sys_clock_khz(250000, true);
     stdio_init_all();
 
     PIO pio = pio0;
@@ -166,12 +166,12 @@ int main() {
 
     interp_set_config(interp0, 0, &lane0_cfg);
     interp_set_config(interp0, 1, &lane1_cfg);
-    interp0->base[2] = (uint32_t) raspberry_256x256;
+    interp0->base[2] = (uint32_t) doge_256x256;
 
     float theta = 0.f;
     float theta_max = 2.f * (float) M_PI;
     while (1) {
-        theta += 0.005f;
+        theta += 0.01f;
         if (theta > theta_max)
             theta -= theta_max;
         int32_t rotate[4] = {
